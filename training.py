@@ -7,7 +7,6 @@ from itertools import izip, groupby
 from sql import Column, Literal
 from sql.aggregate import Sum
 from sql.conditionals import Coalesce
-
 from trytond.model import Workflow, ModelView, ModelSQL, fields
 from trytond.wizard import Wizard, StateView, StateAction, StateTransition, \
     Button
@@ -27,6 +26,13 @@ STATES_CONFIRMED = {
     'required': (Eval('state') == 'confirmed'),
 }
 
+STATE = [('draft', 'Draft'),
+         ('opened', 'Opened'),
+         ('confirmed', 'Confirmed'),
+         ('in_progress', 'In Progress'),
+         ('closed', 'Closed'),
+         ('cancelled', 'Cancelled')]
+
 GUARANTEE = [
     ('payment', 'Payment'),
     ('voucher', 'Voucher'),
@@ -34,12 +40,76 @@ GUARANTEE = [
     ('letter', 'Letter'),
     ]
 
+class TrainingSession(ModelView, ModelSQL):
+    'Session'
+    __name__ = 'training.session'
+
+    name = fields.Char('Name', required=True)
+    state = fields.Selection(STATE,
+                                   'State',
+                                   required=True,
+                                   readonly=True,
+                                   help="The status of the session",
+                                  )
+    done = fields.boolean('Done')
+    offer = fields.Many2One('training.offer',
+                                     'Offer',
+                                     required=True,
+                                     help="Allows to select a validated offer for the session",
+                                     domain=[('state', '=', 'validated')]
+                                    )
+    
+    start_date = fields.Date('Start Date',
+                                 required=True,
+                                 help="The date of the planned session"
+                                )
+    date_end = fields.Date('End Date',
+                                 help="The end date of the planned session"
+                                )
+    catalog = fields.Many2One('training.catalog',
+                                        'Catalog',
+                                        help="The catalog for the session",
+                                        required=True)
+    faculty = fields.Many2One('training.faculty',
+                                    'Responsible',
+                                    required=True, 
+                                    domain = [('is_faculty','=',True)])
+    participant_count = fields.Integer('Participant Count')
+    min_limit = fields.Integer('Mininum Threshold',
+                               help="The minimum threshold is the minimum of the minimum threshold of each seance",
+                                )
+    max_limit = fields.Integer('Maximum Threshold',
+                                      help="The maximum threshold is the minimum of the maximum threshold of each seance"
+                                      )
+    active = fields.Boolean('Active')
+    #pending hourly
+
+    @staticmethod
+    def default_state(self):
+        return 'draft'
+    
+    @staticmethod
+    def default_manual(self):
+        return 0
+    
+    @staticmethod
+    def default_min_limit(self):
+        return 1
+    
+    @staticmethod
+    def default_max_limit(self):
+        return 1
+    
+    @staticmethod
+    def default_active(self):
+        return True
+
 class TrainingCatalog(ModelView, ModelSQL):
     'Catalog'
     __name__ = 'training.catalog'
 
     
-    name = fields.Char('Title', size=64, required=True, select=1),
+    name = fields.Char('Title', required=True)
     year = fields.Integer('Year', required=True,
                                 help="The year when the catalog has been published")
     sessions = fields.One2Many('training.session',
@@ -49,32 +119,14 @@ class TrainingCatalog(ModelView, ModelSQL):
     note = fields.Text('Note',
                              translate=True,
                              help="Allows to write a note for the catalog"),
-    state = fields.Selection([('draft','Draft'),
-                              ('validated', 'Validated'),
-                              ('inprogress', 'In Progress'),
-                              ('deprecated', 'Deprecated'),
-                              ('cancelled','Cancelled'),],
-                              'State', required=True, readonly=True,
+    state = fields.Selection(STATE,
+                              'State', required=True,
                               help="The status of the catalog")
-    
+    @staticmethod
     def default_year(self):
-        year =  datetime.now()
+        year =  datetime.year
         return year 
     
+    @staticmethod
     def default_state(self): 
         return 'draft'
-
-class TrainingGroup(ModelView, ModelSQL):
-    'Group'
-    __name__ = 'training.group'
-    
-    name = fields.Char('Name', required=True, help="The group's name",)
-    session = fields.Many2One('training.session', 'Session', required=True, ondelete='CASCADE')
-    seances = fields.One2Many('training.seance', 'group', 'Seances', readonly=True)
-
-    @classmethod
-    def __setup__(cls):
-        super(TrainingGroup, cls).__setup__()
-        cls._sql_constraints += [
-            ('uniq_name_session', 'UNIQUE(name, session_id)', 'It already exists a group with this name.'),
-            ]

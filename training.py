@@ -29,16 +29,8 @@ STATES_CONFIRMED = {
 STATE = [('draft', 'Draft'),
          ('opened', 'Opened'),
          ('confirmed', 'Confirmed'),
-         ('in_progress', 'In Progress'),
          ('closed', 'Closed'),
          ('cancelled', 'Cancelled')]
-
-GUARANTEE = [
-    ('payment', 'Payment'),
-    ('voucher', 'Voucher'),
-    ('credit_card', 'Credit Card'),
-    ('letter', 'Letter'),
-    ]
 
 class TrainingSession(ModelView, ModelSQL):
     'Session'
@@ -85,30 +77,25 @@ class TrainingSession(ModelView, ModelSQL):
     #pending hourly
 
     @staticmethod
-    def default_state(self):
+    def default_state():
         return 'draft'
     
     @staticmethod
-    def default_manual(self):
-        return 0
-    
-    @staticmethod
-    def default_min_limit(self):
+    def default_min_limit():
         return 1
     
     @staticmethod
-    def default_max_limit(self):
+    def default_max_limit():
         return 1
     
     @staticmethod
-    def default_active(self):
+    def default_active():
         return True
 
 class TrainingCatalog(ModelView, ModelSQL):
     'Catalog'
     __name__ = 'training.catalog'
 
-    
     name = fields.Char('Title', required=True)
     year = fields.Integer('Year', required=True,
                                 help="The year when the catalog has been published")
@@ -123,10 +110,10 @@ class TrainingCatalog(ModelView, ModelSQL):
                               'State', required=True,
                               help="The status of the catalog")
     @staticmethod
-    def default_year(self):
+    def default_year():
         year =  datetime.year
         return year 
     
     @staticmethod
-    def default_state(self): 
+    def default_state(): 
         return 'draft'

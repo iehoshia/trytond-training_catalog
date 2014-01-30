@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<tryton>
+    <data>
+
+<!-- Training Catalog -->
+
+        <record model="ir.ui.view" id="training_catalog_view_form">
+            <field name="model">training.catalog</field>
+            <field name="type">form</field>
+            <field name="inherit" eval="None"/>            
+            <field name="name">catalog_form</field>
+        </record>
+
+        <record model="ir.ui.view" id="training_catalog_view_tree">
+            <field name="model">training.catalog</field>
+            <field name="type">tree</field>
+            <field name="inherit" eval="None"/>
+            <field name="name">catalog_tree</field>
+        </record>
+        
+        <record model="ir.action.act_window" id="training_action_catalog">
+            <field name="name">Catalog</field>
+            <field name="res_model">training.catalog</field>
+        </record>
+
+        <record model="ir.action.act_window.view" id="act_catalog_tree_view">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="training_catalog_view_tree"/>
+            <field name="act_window" ref="training_action_catalog"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_catalog_form_view">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="training_catalog_view_form"/>
+            <field name="act_window" ref="training_action_catalog"/>
+        </record>
+
+        <menuitem action="training_action_catalog"
+            id="training_catalog" parent="training.academic_menu"/>
+
+<!-- Training Session -->
+
+        <record model="ir.ui.view" id="session_view_form">
+            <field name="model">training.session</field>
+            <field name="type">form</field>
+            <field name="inherit" eval="None"/>            
+            <field name="name">session_form</field>
+        </record>
+
+        <record model="ir.ui.view" id="session_view_tree">
+            <field name="model">training.session</field>
+            <field name="type">tree</field>
+            <field name="inherit" eval="None"/>
+            <field name="name">session_tree</field>
+        </record>
+        
+        <record model="ir.action.act_window" id="training_action_sesion">
+            <field name="name">Session</field>
+            <field name="res_model">training.session</field>
+        </record>
+
+        <record model="ir.action.act_window.view" id="act_session_tree_view">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="session_view_tree"/>
+            <field name="act_window" ref="training_action_sesion"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_session_form_view">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="session_view_form"/>
+            <field name="act_window" ref="training_action_sesion"/>
+        </record>
+
+        <menuitem action="training_action_sesion"
+            id="training_session_menuitem" parent="training.academic_menu"/>
+
+    </data>
+</tryton>

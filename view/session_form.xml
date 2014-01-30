@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!-- This file is part of Tryton.  The COPYRIGHT file at the top level of
+this repository contains the full copyright notices and license terms. -->
+<form string="Session" col="6">
+    <label name="name"/>
+    <field name="name" xexpand="1"/>
+    <label name="code"/>
+    <field name="code"/>
+    <newline />
+    <notebook colspan="6">
+    	<page string="Offer" col="4" id="offer">
+            <label name="offer"/>
+            <field name="offer"/>
+            <label name="catalog"/>
+            <field name="catalog"/>
+            <label name="start_date"/>
+            <field name="start_date"/>
+            <label name="date_end"/>
+            <field name="date_end"/>
+            <label name="session_day"/>
+            <field name="session_day"/>
+            <newline />
+            <label name="start_time"/>
+            <field name="start_time"/>
+            <label name="end_time"/>
+            <field name="end_time"/>
+            <newline />
+            <label name="faculty"/>
+            <field name="faculty"/>
+        </page>
+    	<page string="Participants" col="4" id="participants">
+            <label name="min_limit"/>
+    		<field name="min_limit"/>
+    		<newline />
+    		<label name="max_limit"/>
+    		<field name="max_limit"/>
+    		<newline />
+    		<label name="participant_count"/>
+    		<field name="participant_count"/>
+        </page>
+    </notebook>
+    <newline />
+    <group col="2" colspan="2" id="states">
+		<label name="state"/>
+        <field name="state"/>
+	</group>
+	<group col="7" colspan="2" id="buttons">
+		<button name="cancel" string="Cancel"
+                        icon="tryton-cancel"/>
+		<button name="draft" string="Draft"/>
+		<button name="open" string="Confirm"
+                        icon="tryton-go-next"/>
+		<button name="done" string="Done"
+                        icon="tryton-go-next"/>
+	</group>
+</form>
